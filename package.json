@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "castle_koa framework gengrate",
   "main": "dist/index.js",
+  "bin": {
+    "castle": "./dist/index.js"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -21,6 +24,9 @@
   },
   "homepage": "https://github.com/YanCastle/castle_cli#readme",
   "dependencies": {
-    "commander": "^2.15.1"
+    "node_powerdesigner": "^1.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^10.1.2"
   }
 }
