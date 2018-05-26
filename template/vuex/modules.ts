@@ -3,9 +3,6 @@ import { ObjectState, SearchResult, SearchWehre } from '../IFace';
 import { search, add, save, del } from '../../api/{__MODULE_NAME__}';
 import store, { ActionContextBasic } from '../'
 //结构设计区
-//品牌编号 {__MODULE_NAME__}ID bigint 自增 主键 必填  
-//品牌名称 Title char(250)   必填 "" 
-//版本号 V bigint   必填  L:F,E:F
 //常量定义区
 export const A_{__MODULE_NAME__}_SEARCH = 'A_{__MODULE_NAME__}_SEARCH'
 export const A_{__MODULE_NAME__}_ADD = 'A_{__MODULE_NAME__}_ADD'
@@ -22,13 +19,11 @@ export const A_{__MODULE_NAME__}_ALL = 'A_{__MODULE_NAME__}_ALL'
 export const M_{__MODULE_NAME__}_ALL = 'M_{__MODULE_NAME__}_ALL'
 export const G_{__MODULE_NAME__} = 'G_{__MODULE_NAME__}'
 
-
+const isDic=false;
 //对象结构
 export interface {__MODULE_NAME__}Object {
     //字段:类型
-    {__MODULE_NAME__}ID: number | any//品牌编号 bigint 自增主键必填
-    Title: string//品牌名称 char(250) 必填""
-    V: number//版本号 bigint 必填
+    {__FIELDS__}
 }
 //空对象
 export const Empty{__MODULE_NAME__}: {__MODULE_NAME__}Object = {
@@ -61,8 +56,8 @@ const state: State = {
 //定义getters
 const getters = {
     [G_{__MODULE_NAME__}_ALL]() {
-        if (state.All.length == 0) {
-
+        if (state.All.length == 0 && isDic) {
+            store.dispatch(A_{__MODULE_NAME__}_ALL)
         }
         return state.All;
     },

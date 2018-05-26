@@ -118,7 +118,7 @@ export default class PDM {
         _.forOwn(this._tables, (table, name) => {
             var columns = [];
             _.forOwn(table.Columns, (column) => {
-                columns.push(`//${column.Name} ${column.Comment.replace("\r\n", "").replace("\r", "").replace("\n", "")}
+                columns.push(`//${column.Name} ${column.Comment.replace("\r\n", "//").replace("\r", "//").replace("\n", "//")}
     ${column.Code}:{
         type:DbDataType.${this.get_type(column.DataType)},
         primaryKey:${column.PrimaryKey},
@@ -173,7 +173,7 @@ export default {
         _.forOwn(this._tables, (table, name) => {
             var columns = [];
             _.forOwn(table.Columns, (column) => {
-                columns.push(`//${column.Name} ${column.Code} ${column.DataType.toUpperCase()} ${column.Comment.replace("\r\n", "").replace("\r", "").replace("\n", "")}`)
+                columns.push(`//${column.Name} ${column.Code} ${column.DataType.toUpperCase()} ${column.Comment.replace("\r\n", "//").replace("\r", "//").replace("\n", "//")}`)
             })
             var js = `import Relation from "castle-koa/dist/lib/relation";
 //${table.Name}
@@ -199,7 +199,7 @@ export default class ${name} extends Relation{
 
             var columns = [];
             _.forOwn(table.Columns, (column) => {
-                columns.push(`//${column.Name} ${column.Code} ${column.DataType.toUpperCase()} ${column.Comment.replace("\r\n", "").replace("\r", "").replace("\n", "")}`)
+                columns.push(`//${column.Name} ${column.Code} ${column.DataType.toUpperCase()} ${column.Comment.replace("\r\n", "//").replace("\r", "//").replace("\n", "//")}`)
             })
             var js = `import Controller from 'castle-koa/dist/lib/controller'
 //${table.Name}
@@ -215,18 +215,22 @@ export default class ${name} extends Controller{
         console.log(`Write Controller Success`)
         return this;
     }
-    gen_api() {
+    async gen_api() {
         return this;
     }
     async gen_vuex() {                
         //load template from url https://raw.githubusercontent.com/YanCastle/castle_cli/master/template/vuex/modules.ts
-        let content = await axios.get('https://raw.githubusercontent.com/YanCastle/castle_cli/master/template/vuex/modules.ts')
+        let modules:string = await axios.get('https://raw.githubusercontent.com/YanCastle/castle_cli/master/template/vuex/modules.ts').then((response)=>{return response.data})
+        let index:string = await axios.get('https://raw.githubusercontent.com/YanCastle/castle_cli/master/template/vuex/index.ts').then((response)=>{return response.data})
         _.forOwn(this._tables,(table:any,name:string)=>{
             let filePath = path.join(this._dir,'store','modules',`${name}.ts`)
+            let __MODULES__=[]
+
+            fs.writeFileSync(filePath,modules.replace('{__MODULE_NAME__}',name).replace('{__FIELDS__}',''))
         })
         return this;
     }
-    gen_compoments() {
+    async gen_compoments() {
 
         return this;
     }

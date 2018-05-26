@@ -20,13 +20,15 @@ if (functions[`${cmd}_${what}`] instanceof Function) {
         process.exit()
     }
     var p: pdm = new pdm();
-    p.parse(process.argv[4], process.argv[5] ? process.argv[5] : './', (d: any) => {
+    p.parse(process.argv[4], process.argv[5] ? process.argv[5] : './', async (d: any) => {
         switch (what) {
             case 'server':
                 p.gen_relation().gen_controller().gen_db();
                 break;
             case 'web':
-                p.gen_api().gen_vuex().gen_compoments();
+                p.gen_api();
+                p.gen_vuex();
+                p.gen_compoments();
                 break;
             default:
                 if (p[`gen_${what}`] instanceof Function) {
