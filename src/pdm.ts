@@ -3,16 +3,20 @@ import * as fs from 'fs'
 import * as path from 'path'
 import * as process from 'process'
 import * as _ from 'lodash'
+import * as http from 'http'
+import axios from 'axios'
 export default class PDM {
     public _data = {};
     public _tables = {};
     public _IDMap = {};
     public _domain = {};
     public _json = {};
+    public _dir = "./";
     parse(path, dir = './', callback: Function) {
         if (!fs.existsSync(path.join(dir, 'src'))) {
             fs.mkdirSync(path.join(dir, 'src'))
         }
+        this._dir = path.join(dir,'src');
         var content = fs.readFileSync(path);
         xmlparse(content, (err, result) => {
             if (err === null) {
@@ -214,8 +218,12 @@ export default class ${name} extends Controller{
     gen_api() {
         return this;
     }
-    gen_vuex() {
-        let dir = 
+    async gen_vuex() {
+        _.forOwn(this._tables,(table:any,name:string)=>{
+            let filePath = path.join(this._dir,'store','modules',`${name}.ts`)
+            //load template from url https://raw.githubusercontent.com/YanCastle/castle_cli/master/template/vuex/modules.ts
+            let content = await axios.get('https://raw.githubusercontent.com/YanCastle/castle_cli/master/template/vuex/modules.ts')
+        })
         return this;
     }
     gen_compoments() {
