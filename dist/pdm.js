@@ -22,12 +22,12 @@ class PDM {
         this._json = {};
         this._dir = "./";
     }
-    parse(path, dir = './', callback) {
+    parse(pdmPath, dir = './', callback) {
         if (!fs.existsSync(path.join(dir, 'src'))) {
             fs.mkdirSync(path.join(dir, 'src'));
         }
         this._dir = path.join(dir, 'src');
-        var content = fs.readFileSync(path);
+        var content = fs.readFileSync(pdmPath);
         xml2js_1.parseString(content, (err, result) => {
             if (err === null) {
                 this._json = result.Model["o:RootObject"]["0"]["c:Children"]["0"]["o:Model"]["0"];

@@ -12,12 +12,12 @@ export default class PDM {
     public _domain = {};
     public _json = {};
     public _dir = "./";
-    parse(path, dir = './', callback: Function) {
+    parse(pdmPath, dir = './', callback: Function) {
         if (!fs.existsSync(path.join(dir, 'src'))) {
             fs.mkdirSync(path.join(dir, 'src'))
         }
         this._dir = path.join(dir,'src');
-        var content = fs.readFileSync(path);
+        var content = fs.readFileSync(pdmPath);
         xmlparse(content, (err, result) => {
             if (err === null) {
                 this._json = result.Model["o:RootObject"]["0"]["c:Children"]["0"]["o:Model"]["0"];
