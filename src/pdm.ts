@@ -218,11 +218,11 @@ export default class ${name} extends Controller{
     gen_api() {
         return this;
     }
-    async gen_vuex() {
+    async gen_vuex() {                
+        //load template from url https://raw.githubusercontent.com/YanCastle/castle_cli/master/template/vuex/modules.ts
+        let content = await axios.get('https://raw.githubusercontent.com/YanCastle/castle_cli/master/template/vuex/modules.ts')
         _.forOwn(this._tables,(table:any,name:string)=>{
             let filePath = path.join(this._dir,'store','modules',`${name}.ts`)
-            //load template from url https://raw.githubusercontent.com/YanCastle/castle_cli/master/template/vuex/modules.ts
-            let content = await axios.get('https://raw.githubusercontent.com/YanCastle/castle_cli/master/template/vuex/modules.ts')
         })
         return this;
     }
