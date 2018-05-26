@@ -1,8 +1,12 @@
 {
-  "name": "castle_cli",
-  "version": "1.0.0",
+  "name": "castle_koa_cli",
+  "version": "1.0.1",
   "description": "castle_koa framework gengrate",
   "main": "dist/index.js",
+  "files": [
+    "dist/index.js",
+    "dist/pdm.js"
+  ],
   "bin": {
     "castle": "./dist/index.js"
   },
@@ -24,9 +28,13 @@
   },
   "homepage": "https://github.com/YanCastle/castle_cli#readme",
   "dependencies": {
-    "node_powerdesigner": "^1.0.0"
+    "castle_pdm": "^1.0.2",
+    "lodash": "^4.17.10",
+    "xml2js": "^0.4.19"
   },
   "devDependencies": {
-    "@types/node": "^10.1.2"
+    "@types/lodash": "^4.14.109",
+    "@types/node": "^10.1.2",
+    "@types/xml2js": "^0.4.2"
   }
 }
