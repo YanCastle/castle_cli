@@ -1,5 +1,13 @@
 #! /usr/bin/env node
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const process = require("process");
 const child_process = require("child_process");
@@ -20,8 +28,23 @@ if (functions[`${cmd}_${what}`] instanceof Function) {
         process.exit();
     }
     var p = new pdm_1.default();
-    p.parse(process.argv[4], (d) => {
-    });
+    p.parse(process.argv[4], process.argv[5] ? process.argv[5] : './', (d) => __awaiter(this, void 0, void 0, function* () {
+        switch (what) {
+            case 'server':
+                p.gen_relation().gen_controller().gen_db();
+                break;
+            case 'web':
+                p.gen_api();
+                p.gen_vuex();
+                p.gen_compoments();
+                break;
+            default:
+                if (p[`gen_${what}`] instanceof Function) {
+                    p[`gen_${what}`]();
+                }
+                break;
+        }
+    }));
     functions[`${cmd}_${what}`]();
 }
 else if (cmd === 'init') {

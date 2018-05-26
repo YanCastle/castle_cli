@@ -1,8 +1,18 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const xml2js_1 = require("xml2js");
 const fs = require("fs");
+const path = require("path");
 const _ = require("lodash");
+const axios_1 = require("axios");
 class PDM {
     constructor() {
         this._data = {};
@@ -10,10 +20,14 @@ class PDM {
         this._IDMap = {};
         this._domain = {};
         this._json = {};
+        this._dir = "./";
     }
     parse(path, dir = './', callback) {
-        if (fs.existsSync(path.reserve()))
-            var content = fs.readFileSync(path);
+        if (!fs.existsSync(path.join(dir, 'src'))) {
+            fs.mkdirSync(path.join(dir, 'src'));
+        }
+        this._dir = path.join(dir, 'src');
+        var content = fs.readFileSync(path);
         xml2js_1.parseString(content, (err, result) => {
             if (err === null) {
                 this._json = result.Model["o:RootObject"]["0"]["c:Children"]["0"]["o:Model"]["0"];
@@ -112,7 +126,7 @@ class PDM {
         _.forOwn(this._tables, (table, name) => {
             var columns = [];
             _.forOwn(table.Columns, (column) => {
-                columns.push(`//${column.Name} ${column.Comment.replace("\r\n", "").replace("\r", "").replace("\n", "")}
+                columns.push(`//${column.Name} ${column.Comment.replace("\r\n", "//").replace("\r", "//").replace("\n", "//")}
     ${column.Code}:{
         type:DbDataType.${this.get_type(column.DataType)},
         primaryKey:${column.PrimaryKey},
@@ -130,6 +144,7 @@ export default {
             console.log(`Write src/db/${name}.ts`);
         });
         console.log(`Write Db Success`);
+        return this;
     }
     get_type(type) {
         return type;
@@ -153,7 +168,7 @@ export default {
         _.forOwn(this._tables, (table, name) => {
             var columns = [];
             _.forOwn(table.Columns, (column) => {
-                columns.push(`//${column.Name} ${column.Code} ${column.DataType.toUpperCase()} ${column.Comment.replace("\r\n", "").replace("\r", "").replace("\n", "")}`);
+                columns.push(`//${column.Name} ${column.Code} ${column.DataType.toUpperCase()} ${column.Comment.replace("\r\n", "//").replace("\r", "//").replace("\n", "//")}`);
             });
             var js = `import Relation from "castle-koa/dist/lib/relation";
 //${table.Name}
@@ -167,6 +182,7 @@ export default class ${name} extends Relation{
             console.log(`Write src/relation/${name}.ts`);
         });
         console.log(`Write Relation Success`);
+        return this;
     }
     gen_controller() {
         console.log(`Write Controller Start`);
@@ -177,7 +193,7 @@ export default class ${name} extends Relation{
         _.forOwn(this._tables, (table, name) => {
             var columns = [];
             _.forOwn(table.Columns, (column) => {
-                columns.push(`//${column.Name} ${column.Code} ${column.DataType.toUpperCase()} ${column.Comment.replace("\r\n", "").replace("\r", "").replace("\n", "")}`);
+                columns.push(`//${column.Name} ${column.Code} ${column.DataType.toUpperCase()} ${column.Comment.replace("\r\n", "//").replace("\r", "//").replace("\n", "//")}`);
             });
             var js = `import Controller from 'castle-koa/dist/lib/controller'
 //${table.Name}
@@ -191,11 +207,29 @@ export default class ${name} extends Controller{
             console.log(`Write src/controller/${name}.ts`);
         });
         console.log(`Write Controller Success`);
+        return this;
     }
     gen_api() {
+        return __awaiter(this, void 0, void 0, function* () {
+            return this;
+        });
     }
-    gen_vuex() { }
+    gen_vuex() {
+        return __awaiter(this, void 0, void 0, function* () {
+            let modules = yield axios_1.default.get('https://raw.githubusercontent.com/YanCastle/castle_cli/master/template/vuex/modules.ts').then((response) => { return response.data; });
+            let index = yield axios_1.default.get('https://raw.githubusercontent.com/YanCastle/castle_cli/master/template/vuex/index.ts').then((response) => { return response.data; });
+            _.forOwn(this._tables, (table, name) => {
+                let filePath = path.join(this._dir, 'store', 'modules', `${name}.ts`);
+                let __MODULES__ = [];
+                fs.writeFileSync(filePath, modules.replace('{__MODULE_NAME__}', name).replace('{__FIELDS__}', ''));
+            });
+            return this;
+        });
+    }
     gen_compoments() {
+        return __awaiter(this, void 0, void 0, function* () {
+            return this;
+        });
     }
 }
 exports.default = PDM;
