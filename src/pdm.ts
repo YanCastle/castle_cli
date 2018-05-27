@@ -13,9 +13,7 @@ export default class PDM {
     public _json = {};
     public _dir = "./";
     parse(pdmPath, dir = './', callback: Function) {
-        if (!fs.existsSync(path.join(dir, 'src'))) {
-            fs.mkdirSync(path.join(dir, 'src'))
-        }
+        this.checkDir(dir)
         this._dir = path.join(dir,'src');
         var content = fs.readFileSync(pdmPath);
         xmlparse(content, (err, result) => {
@@ -228,12 +226,48 @@ export default class ${name} extends Controller{
         let modules:string = await axios.get('https://raw.githubusercontent.com/YanCastle/castle_cli/master/template/vuex/modules.ts').then((response)=>{return response.data})
         let index:string = await axios.get('https://raw.githubusercontent.com/YanCastle/castle_cli/master/template/vuex/index.ts').then((response)=>{return response.data})
         _.forOwn(this._tables,(table:any,name:string)=>{
+            let __MODULES__=[],__FIELDS__=[],__EMPTY__=[]
+            _.forOwn(table.Columns, (column) => {
+                __FIELDS__.push(`${column.Code}:${this.getTypeSymbol(column)},//${column.Name}`)
+                __EMPTY__.push(`${column.Code}:${this.getDefaultValue(column)},//${column.Name}`)
+                // columns.push(`//${column.Name} ${column.Code} ${column.DataType.toUpperCase()} ${column.Comment.replace("\r\n", "//").replace("\r", "//").replace("\n", "//")}`)
+            })
             let filePath = path.join(this._dir,'store','modules',`${name}.ts`)
-            let __MODULES__=[]
-
-            fs.writeFileSync(filePath,modules.replace('{__MODULE_NAME__}',name).replace('{__FIELDS__}',''))
+            this.checkDir(path.dirname(filePath))
+            fs.writeFileSync(filePath,modules
+                .replace(/\{__MODULE_NAME__\}/g,name)
+                .replace(/\{__UPPER_MODULE_NAME__\}/g,name.toUpperCase())
+            .replace(/\{__FIELDS__\}/g,__FIELDS__.join("\r\n")
+            .replace(/\{__EMPTY__\}/g,__EMPTY__.join("\r\n"))))
         })
         return this;
+    }
+    getDefaultValue(column:any){
+        return column.Default.length>0?column.Default:"''"
+    }
+    checkDir(dir){
+        if(fs.existsSync(path.dirname(dir))){
+            if(!fs.existsSync(dir)){fs.mkdirSync(dir)}
+        }else{
+            this.checkDir(path.dirname(dir))
+            fs.mkdirSync(dir)
+        }
+    }
+    getTypeSymbol(params:any) {
+        let type={
+            char:'String',
+            timestamp:'Date',
+            int:'Number',
+            text:'String',
+            datetime:'Date'
+        };
+        let t =['any'];
+        _.forOwn(type,(d:any,k:any)=>{
+            if(params.DataType.indexOf(k)>-1){
+                t.push(d)
+            }
+        })
+        return t.join('|')
     }
     async gen_compoments() {
 

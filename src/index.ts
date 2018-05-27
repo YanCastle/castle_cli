@@ -14,7 +14,7 @@ const functions = {
 
     }
 }
-if (functions[`${cmd}_${what}`] instanceof Function) {
+if (cmd=="gen") {
     if (!fs.existsSync(process.argv[4])) {
         console.error('Error of *.pdm file path\r\npdm数据库设计稿文件不存在或路径不对，请核实')
         process.exit()
@@ -37,7 +37,6 @@ if (functions[`${cmd}_${what}`] instanceof Function) {
                 break;
         }
     })
-    functions[`${cmd}_${what}`]()
 } else if (cmd === 'init') {
     if (process.argv[4] === undefined) {
         console.error('need dir name,please use "castle init server dir_path" \r\n 需要输入目录名称')

@@ -4,20 +4,20 @@ import { search, add, save, del } from '../../api/{__MODULE_NAME__}';
 import store, { ActionContextBasic } from '../'
 //结构设计区
 //常量定义区
-export const A_{__MODULE_NAME__}_SEARCH = 'A_{__MODULE_NAME__}_SEARCH'
-export const A_{__MODULE_NAME__}_ADD = 'A_{__MODULE_NAME__}_ADD'
-export const A_{__MODULE_NAME__}_SAVE = 'A_{__MODULE_NAME__}_SAVE'
-export const A_{__MODULE_NAME__}_DEL = 'A_{__MODULE_NAME__}_DEL'
-export const M_{__MODULE_NAME__}_SEARCH = 'A_{__MODULE_NAME__}_SEARCH'
-export const M_{__MODULE_NAME__}_WHERE = 'M_{__MODULE_NAME__}_WHERE'
-export const M_{__MODULE_NAME__}_WHERE_P = 'M_{__MODULE_NAME__}_WHERE_P'
-export const M_{__MODULE_NAME__}_WHERE_KEYWORD = 'M_{__MODULE_NAME__}_WHERE_KEYWORD'
-export const M_{__MODULE_NAME__}_WHERE_N = 'M_{__MODULE_NAME__}_WHERE_N'
-export const M_{__MODULE_NAME__}_WHERE_W = 'M_{__MODULE_NAME__}_WHERE_W'
-export const G_{__MODULE_NAME__}_ALL = 'G_{__MODULE_NAME__}_ALL'
-export const A_{__MODULE_NAME__}_ALL = 'A_{__MODULE_NAME__}_ALL'
-export const M_{__MODULE_NAME__}_ALL = 'M_{__MODULE_NAME__}_ALL'
-export const G_{__MODULE_NAME__} = 'G_{__MODULE_NAME__}'
+export const A_{__MODULE_NAME__}_SEARCH = 'A_{__UPPER_MODULE_NAME__}_SEARCH'
+export const A_{__MODULE_NAME__}_ADD = 'A_{__UPPER_MODULE_NAME__}_ADD'
+export const A_{__MODULE_NAME__}_SAVE = 'A_{__UPPER_MODULE_NAME__}_SAVE'
+export const A_{__MODULE_NAME__}_DEL = 'A_{__UPPER_MODULE_NAME__}_DEL'
+export const M_{__MODULE_NAME__}_SEARCH = 'A_{__UPPER_MODULE_NAME__}_SEARCH'
+export const M_{__MODULE_NAME__}_WHERE = 'M_{__UPPER_MODULE_NAME__}_WHERE'
+export const M_{__MODULE_NAME__}_WHERE_P = 'M_{__UPPER_MODULE_NAME__}_WHERE_P'
+export const M_{__MODULE_NAME__}_WHERE_KEYWORD = 'M_{__UPPER_MODULE_NAME__}_WHERE_KEYWORD'
+export const M_{__MODULE_NAME__}_WHERE_N = 'M_{__UPPER_MODULE_NAME__}_WHERE_N'
+export const M_{__MODULE_NAME__}_WHERE_W = 'M_{__UPPER_MODULE_NAME__}_WHERE_W'
+export const G_{__MODULE_NAME__}_ALL = 'G_{__UPPER_MODULE_NAME__}_ALL'
+export const A_{__MODULE_NAME__}_ALL = 'A_{__UPPER_MODULE_NAME__}_ALL'
+export const M_{__MODULE_NAME__}_ALL = 'M_{__UPPER_MODULE_NAME__}_ALL'
+export const G_{__MODULE_NAME__} = 'G_{__UPPER_MODULE_NAME__}'
 
 const isDic=false;
 //对象结构
@@ -28,9 +28,7 @@ export interface {__MODULE_NAME__}Object {
 //空对象
 export const Empty{__MODULE_NAME__}: {__MODULE_NAME__}Object = {
     //字段:初始值
-    {__MODULE_NAME__}ID: 0,
-    Title: "",
-    V: 0,
+    {__EMPTY__}
 }
 //State存储库结构
 export interface State {
