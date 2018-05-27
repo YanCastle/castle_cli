@@ -166,10 +166,11 @@ export default {
             fs.mkdirSync(dir);
         }
         _.forOwn(this._tables, (table, name) => {
-            var columns = [];
+            var columns = ['/**'];
             _.forOwn(table.Columns, (column) => {
                 columns.push(`//${column.Name} ${column.Code} ${column.DataType.toUpperCase()} ${column.Comment.replace("\r\n", "//").replace("\r", "//").replace("\n", "//")}`);
             });
+            columns.push('*/');
             var js = `import Relation from "castle-koa/dist/lib/relation";
 //${table.Name}
 ${columns.join(',\r\n   ')}
@@ -191,10 +192,11 @@ export default class ${name} extends Relation{
             fs.mkdirSync(dir);
         }
         _.forOwn(this._tables, (table, name) => {
-            var columns = [];
+            var columns = ['/**'];
             _.forOwn(table.Columns, (column) => {
                 columns.push(`//${column.Name} ${column.Code} ${column.DataType.toUpperCase()} ${column.Comment.replace("\r\n", "//").replace("\r", "//").replace("\n", "//")}`);
             });
+            columns.push('*/');
             var js = `import Controller from 'castle-koa/dist/lib/controller'
 //${table.Name}
 ${columns.join(',\r\n   ')}
