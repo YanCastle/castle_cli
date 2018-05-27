@@ -77,7 +77,7 @@ const actions = {
             context.commit(M_{__UPPER_MODULE_NAME__}_ALL, d.L);
         })
     },
-    [A_{__UPPER_MODULE_NAME__}_ADD](context: ActionContextBasic, { Data, s, e }: { Data: {__UPPER_MODULE_NAME__}Object, s?: Function, e?: Function }) {
+    [A_{__UPPER_MODULE_NAME__}_ADD](context: ActionContextBasic, { Data, s, e }: { Data: {__MODULE_NAME__}Object, s?: Function, e?: Function }) {
         add(Data, (d: any) => {
             if (d) { if (isFunction(s)) s() } else if (isFunction(e)) { e() }
             //更新列表
@@ -85,7 +85,7 @@ const actions = {
             context.dispatch(A_{__UPPER_MODULE_NAME__}_ALL)
         }, e)
     },
-    [A_{__UPPER_MODULE_NAME__}_SAVE](context: ActionContextBasic, { Data, s, e }: { Data: {__UPPER_MODULE_NAME__}Object, s?: Function, e?: Function }) {
+    [A_{__UPPER_MODULE_NAME__}_SAVE](context: ActionContextBasic, { Data, s, e }: { Data: {__MODULE_NAME__}Object, s?: Function, e?: Function }) {
         save(Data.{__UPPER_MODULE_NAME__}ID, Data, (d: any) => {
             if (d) { if (isFunction(s)) s() } else if (isFunction(e)) { e() }
             //更新列表
@@ -93,7 +93,7 @@ const actions = {
             context.dispatch(A_{__UPPER_MODULE_NAME__}_ALL)
         }, e)
     },
-    [A_{__UPPER_MODULE_NAME__}_DEL](context: ActionContextBasic, { {__UPPER_MODULE_NAME__}ID, s, e }: { {__UPPER_MODULE_NAME__}ID: number, s?: Function, e?: Function }) {
+    [A_{__UPPER_MODULE_NAME__}_DEL](context: ActionContextBasic, { {__MODULE_NAME__}ID, s, e }: { {__MODULE_NAME__}ID: number, s?: Function, e?: Function }) {
         del({__UPPER_MODULE_NAME__}ID, (d: any) => {
             if (d) { if (isFunction(s)) s() } else if (isFunction(e)) { e() }
             //更新列表
