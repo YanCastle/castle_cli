@@ -23,12 +23,12 @@ const isDic=false;
 //对象结构
 export interface {__MODULE_NAME__}Object {
     //字段:类型
-    {__FIELDS__}
+{__FIELDS__}
 }
 //空对象
 export const Empty{__MODULE_NAME__}: {__MODULE_NAME__}Object = {
     //字段:初始值
-    {__EMPTY__}
+{__EMPTY__}
 }
 //State存储库结构
 export interface State {

@@ -232,8 +232,8 @@ export default class ${name} extends Controller{
                 fs.writeFileSync(filePath, modules
                     .replace(/\{__MODULE_NAME__\}/g, name)
                     .replace(/\{__UPPER_MODULE_NAME__\}/g, name.toUpperCase())
-                    .replace(/\{__FIELDS__\}/g, __FIELDS__.join("\r\n")
-                    .replace(/\{__EMPTY__\}/g, __EMPTY__.join("\r\n"))));
+                    .replace(/\{__FIELDS__\}/g, __FIELDS__.join("\r\n    ")
+                    .replace(/\{__EMPTY__\}/g, __EMPTY__.join("\r\n    "))));
             });
             return this;
         });
@@ -282,8 +282,8 @@ export default class ${name} extends Controller{
                 fs.writeFileSync(filePath, modules
                     .replace(/\{__MODULE_NAME__\}/g, name)
                     .replace(/\{__UPPER_MODULE_NAME__\}/g, name.toUpperCase())
-                    .replace(/\{__FIELDS__\}/g, __FIELDS__.join("\r\n")
-                    .replace(/\{__EMPTY__\}/g, __EMPTY__.join("\r\n"))));
+                    .replace(/\{__FIELDS__\}/g, __FIELDS__.join("\r\n    ")
+                    .replace(/\{__EMPTY__\}/g, __EMPTY__.join("\r\n    "))));
             });
             return this;
         });
