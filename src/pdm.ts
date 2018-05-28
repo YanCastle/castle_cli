@@ -224,9 +224,9 @@ export default class ${name} extends Controller{
     async gen_vuex() {                
         //load template from url https://raw.githubusercontent.com/YanCastle/castle_cli/master/template/vuex/modules.ts
         let modules:string = await axios.get('https://raw.githubusercontent.com/YanCastle/castle_cli/master/template/vuex/modules.ts').then((response)=>{return response.data})
-        let index:string = await axios.get('https://raw.githubusercontent.com/YanCastle/castle_cli/master/template/vuex/index.ts').then((response)=>{return response.data})
+        let __MODULE_STATE__=[],__IMPORT__=[],__MODULES__=[];
         _.forOwn(this._tables,(table:any,name:string)=>{
-            let __MODULES__=[],__FIELDS__=[],__EMPTY__=[]
+            let __FIELDS__=[],__EMPTY__=[]
             _.forOwn(table.Columns, (column) => {
                 __FIELDS__.push(`${column.Code}:${this.getTypeSymbol(column)},//${column.Name}`)
                 __EMPTY__.push(`${column.Code}:${this.getDefaultValue(column)},//${column.Name}`)
@@ -237,9 +237,17 @@ export default class ${name} extends Controller{
             fs.writeFileSync(filePath,modules
                 .replace(/\{__MODULE_NAME__\}/g,name)
                 .replace(/\{__UPPER_MODULE_NAME__\}/g,name.toUpperCase())
-            .replace(/\{__FIELDS__\}/g,__FIELDS__.join("\r\n    ")
-            .replace(/\{__EMPTY__\}/g,__EMPTY__.join("\r\n    "))))
+                .replace(/\{__FIELDS__\}/g,__FIELDS__.join("\r\n    "))
+                .replace(/\{__EMPTY__\}/g,__EMPTY__.join("\r\n    ")))
+            __MODULE_STATE__.push(`${name}State:${name}State`);
+            __IMPORT__.push(`import ${name},{State as ${name}State} from './modules/${name}'`);
+            __MODULES__.push(name);
         })
+        let index:string = await axios.get('https://raw.githubusercontent.com/YanCastle/castle_cli/master/template/vuex/index.ts').then((response)=>{return response.data})
+        let indexPath = path.join(this._dir,'store','index.ts');
+        fs.writeFileSync(indexPath,index.replace(/\{__IMPORT__\}/g,__IMPORT__.join("\r\n"))
+            .replace(/\{__MODULES__\}/g,__MODULES__.join(",\r\n        "))
+            .replace(/\{__MODULE_STATE__\}/g,__MODULE_STATE__.join(",\r\n    ")))
         return this;
     }
     getDefaultValue(column:any){
@@ -280,11 +288,11 @@ export default class ${name} extends Controller{
             })
             let filePath = path.join(this._dir,'store','modules',`${name}.ts`)
             this.checkDir(path.dirname(filePath))
-            fs.writeFileSync(filePath,modules
-                .replace(/\{__MODULE_NAME__\}/g,name)
-                .replace(/\{__UPPER_MODULE_NAME__\}/g,name.toUpperCase())
-            .replace(/\{__FIELDS__\}/g,__FIELDS__.join("\r\n    ")
-            .replace(/\{__EMPTY__\}/g,__EMPTY__.join("\r\n    "))))
+            // fs.writeFileSync(filePath,modules
+            //     .replace(/\{__MODULE_NAME__\}/g,name)
+            //     .replace(/\{__UPPER_MODULE_NAME__\}/g,name.toUpperCase())
+            // .replace(/\{__FIELDS__\}/g,__FIELDS__.join("\r\n    ")
+            // .replace(/\{__EMPTY__\}/g,__EMPTY__.join("\r\n    "))))
         })
         return this;
     }
