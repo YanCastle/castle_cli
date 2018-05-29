@@ -219,6 +219,16 @@ export default class ${name} extends Controller{
         return this;
     }
     async gen_api() {
+        let content:string = await axios.get('https://raw.githubusercontent.com/YanCastle/castle_cli/master/template/api/template.ts').then((response)=>{return response.data})
+        _.forOwn(this._tables,(table:any,name:string)=>{
+            let __MODULE_NAME__ = name;
+            let __MODULE_PK__ = '';
+            _.forOwn(table.columns,(column)=>{
+                if(column.PrimaryKey){__MODULE_PK__=column.Code}
+            })
+            let fsPath = path.join(this._dir,'api',`${name}.ts`)
+            fs.writeFileSync(fsPath,content.replace(/__MODULE_NAME__/g,__MODULE_NAME__).replace(/__MODULE_PK__/g,__MODULE_PK__))
+        })
         return this;
     }
     async gen_vuex() {                
