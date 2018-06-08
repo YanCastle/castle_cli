@@ -5,12 +5,21 @@ import * as process from 'process'
 import * as _ from 'lodash'
 import * as http from 'http'
 import axios from 'axios'
+export enum RefType{
+    Table,
+    View,
+    Domain,
+    Reference,
+    Procedures,
+}
 export default class PDM {
     public _data = {};
     public _tables = {};
+    public _views={};
     public _IDMap = {};
     public _domain = {};
     public _json = {};
+    public _ref = {};
     public _dir = "./";
     parse(pdmPath, dir = './', callback: Function) {
         this.checkDir(dir)
@@ -19,9 +28,11 @@ export default class PDM {
         xmlparse(content, (err, result) => {
             if (err === null) {
                 this._json = result.Model["o:RootObject"]["0"]["c:Children"]["0"]["o:Model"]["0"];
+                this.parse_ref();
                 this.parse_domain();
                 this.parse_fk();
                 this.parse_table();
+                this.parse_view();
                 callback({
                     domains: this._domain,
                     json: this._json,
@@ -31,6 +42,45 @@ export default class PDM {
         });
     }
     parse_fk() {
+    }
+    parse_ref(){
+        let Ref={};
+        _.forOwn(this._json['c:Tables'][0]['o:Table'],(d:any)=>{
+            Ref[d['$']['Id']]={
+                Type:RefType.Table,
+                Code:d['a:Code'][0],
+                Name:d['a:Name'][0],
+            }
+        })
+        _.forOwn(this._json['c:References'][0]['o:Reference'],(d:any)=>{
+            Ref[d['$']['Id']]={
+                Type:RefType.Reference,
+                Code:d['a:Code'][0],
+                Name:d['a:Name'][0],
+            }
+        })
+        _.forOwn(this._json['c:Procedures'][0]['o:Procedure'],(d:any)=>{
+            Ref[d['$']['Id']]={
+                Type:RefType.Procedures,
+                Code:d['a:Code'][0],
+                Name:d['a:Name'][0],
+            }
+        })
+        _.forOwn(this._json['c:Domains'][0]['o:Domain'],(d:any)=>{
+            Ref[d['$']['Id']]={
+                Type:RefType.Domain,
+                Code:d['a:Code'][0],
+                Name:d['a:Name'][0],
+            }
+        })
+        _.forOwn(this._json['c:Views'][0]['o:View'],(d:any)=>{
+            Ref[d['$']['Id']]={
+                Type:RefType.View,
+                Code:d['a:Code'][0],
+                Name:d['a:Name'][0],
+            }
+        })
+        this._ref=Ref;
     }
     parse_domain() {
         _.forOwn(this._json["c:Domains"]["0"]["o:PhysicalDomain"], v => {
@@ -43,6 +93,34 @@ export default class PDM {
                 Id: v.$.Id
             };
         });
+    }
+    parse_view(){
+        _.forOwn(this._json['c:Views'][0]['o:View'],(v:any)=>{
+            let Columns = {};
+            _.forOwn(v['c:Columns'][0]['o:ViewColumn'],(c:any)=>{
+                if(c['a:DataType']===undefined){
+                    console.log(`视图:${v['a:Name']} 中的 ${c['a:Code']} 无数据类型，数据校验失败`)
+                    throw new Error(`视图:${v['a:Name']} 中的 ${c['a:Code']} 无数据类型，数据校验失败`)
+                }
+                Columns[c['a:Code']]={                    
+                    Name: c['a:Name'][0],
+                    Code: c['a:Code'][0],
+                    DataType: c['a:DataType']?c['a:DataType'][0]:'',
+                    Comment:c['a:Name'][0]
+                }
+            })
+            let Tables={};
+            _.forOwn(v['c:View.Tables'][0]['o:Table'],(t:any)=>{
+                Tables[this._ref[t['$']['Ref']]['Code']]=this._tables[this._ref[t['$']['Ref']]['Code']]
+            })
+            let view = {
+                Code:v['a:Code'][0],
+                Name:v['a:Name'][0],
+                Columns,
+                Tables,
+            };
+            this._views[v['a:Code'][0]]=view;
+        })
     }
     parse_table() {
         var DefaultValueMap = {
@@ -109,7 +187,7 @@ export default class PDM {
     gen_db() {
         console.log('Write Db JS Start')
         // 生成Db下的js文件
-        var dbDir = 'src/db'
+        var dbDir = path.join(this._dir,'db')
         if (!fs.existsSync(dbDir)) {
             fs.mkdirSync(dbDir)
         }
@@ -135,6 +213,25 @@ export default {
             let dbPath = `${dbDir}/${name}.ts`
             fs.writeFileSync(dbPath, js)
             console.log(`Write src/db/${name}.ts`)
+        })
+        _.forOwn(this._views, (table, name) => {
+            var columns = [];
+            _.forOwn(table.Columns, (column) => {
+                columns.push(`//${column.Name} 
+/**
+${column.Comment.replace("\r\n", "//").replace("\r", "//").replace("\n", "//")}
+*/
+    ${column.Code}:{
+        type:DbDataType.${this.get_type(column.DataType)},
+    }`)
+            })
+            var js = `import { DbDataType } from "castle-koa/dist/utils/iface";
+export default {
+    ${columns.join(',\r\n   ')}
+}`;
+            let dbPath = `${dbDir}/${name}.ts`
+            fs.writeFileSync(dbPath, js)
+            console.log(`Write ${dbPath}.ts`)
         })
         console.log(`Write Db Success`)
         return this;
@@ -167,7 +264,7 @@ export default {
     gen_relation() {
         //TODO 生成Relation类
         console.log(`Write Relation Start`)
-        var dir = 'src/relation';
+        var dir = path.join(this._dir,'relation')
         if (!fs.existsSync(dir)) {
             fs.mkdirSync(dir)
         }
@@ -193,7 +290,7 @@ export default class ${name} extends Relation{
     }
     gen_controller() {
         console.log(`Write Controller Start`)
-        var dir = 'src/controller';
+        var dir = path.join(this._dir,'controller')
         if (!fs.existsSync(dir)) {
             fs.mkdirSync(dir)
         }
@@ -223,8 +320,10 @@ export default class ${name} extends Controller{
         _.forOwn(this._tables,(table:any,name:string)=>{
             let __MODULE_NAME__ = name;
             let __MODULE_PK__ = '';
-            _.forOwn(table.columns,(column)=>{
-                if(column.PrimaryKey){__MODULE_PK__=column.Code}
+            _.forOwn(table.Columns,(column)=>{
+                if(column.PrimaryKey){
+                    __MODULE_PK__=column.Code
+                }
             })
             let fsPath = path.join(this._dir,'api',`${name}.ts`)
             fs.writeFileSync(fsPath,content.replace(/__MODULE_NAME__/g,__MODULE_NAME__).replace(/__MODULE_PK__/g,__MODULE_PK__))

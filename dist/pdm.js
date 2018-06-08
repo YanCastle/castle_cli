@@ -13,13 +13,23 @@ const fs = require("fs");
 const path = require("path");
 const _ = require("lodash");
 const axios_1 = require("axios");
+var RefType;
+(function (RefType) {
+    RefType[RefType["Table"] = 0] = "Table";
+    RefType[RefType["View"] = 1] = "View";
+    RefType[RefType["Domain"] = 2] = "Domain";
+    RefType[RefType["Reference"] = 3] = "Reference";
+    RefType[RefType["Procedures"] = 4] = "Procedures";
+})(RefType = exports.RefType || (exports.RefType = {}));
 class PDM {
     constructor() {
         this._data = {};
         this._tables = {};
+        this._views = {};
         this._IDMap = {};
         this._domain = {};
         this._json = {};
+        this._ref = {};
         this._dir = "./";
     }
     parse(pdmPath, dir = './', callback) {
@@ -29,9 +39,11 @@ class PDM {
         xml2js_1.parseString(content, (err, result) => {
             if (err === null) {
                 this._json = result.Model["o:RootObject"]["0"]["c:Children"]["0"]["o:Model"]["0"];
+                this.parse_ref();
                 this.parse_domain();
                 this.parse_fk();
                 this.parse_table();
+                this.parse_view();
                 callback({
                     domains: this._domain,
                     json: this._json,
@@ -41,6 +53,45 @@ class PDM {
         });
     }
     parse_fk() {
+    }
+    parse_ref() {
+        let Ref = {};
+        _.forOwn(this._json['c:Tables'][0]['o:Table'], (d) => {
+            Ref[d['$']['Id']] = {
+                Type: RefType.Table,
+                Code: d['a:Code'][0],
+                Name: d['a:Name'][0],
+            };
+        });
+        _.forOwn(this._json['c:References'][0]['o:Reference'], (d) => {
+            Ref[d['$']['Id']] = {
+                Type: RefType.Reference,
+                Code: d['a:Code'][0],
+                Name: d['a:Name'][0],
+            };
+        });
+        _.forOwn(this._json['c:Procedures'][0]['o:Procedure'], (d) => {
+            Ref[d['$']['Id']] = {
+                Type: RefType.Procedures,
+                Code: d['a:Code'][0],
+                Name: d['a:Name'][0],
+            };
+        });
+        _.forOwn(this._json['c:Domains'][0]['o:Domain'], (d) => {
+            Ref[d['$']['Id']] = {
+                Type: RefType.Domain,
+                Code: d['a:Code'][0],
+                Name: d['a:Name'][0],
+            };
+        });
+        _.forOwn(this._json['c:Views'][0]['o:View'], (d) => {
+            Ref[d['$']['Id']] = {
+                Type: RefType.View,
+                Code: d['a:Code'][0],
+                Name: d['a:Name'][0],
+            };
+        });
+        this._ref = Ref;
     }
     parse_domain() {
         _.forOwn(this._json["c:Domains"]["0"]["o:PhysicalDomain"], v => {
@@ -52,6 +103,34 @@ class PDM {
                 DataType: v["a:DataType"] ? v["a:DataType"][0] == 1 : false,
                 Id: v.$.Id
             };
+        });
+    }
+    parse_view() {
+        _.forOwn(this._json['c:Views'][0]['o:View'], (v) => {
+            let Columns = {};
+            _.forOwn(v['c:Columns'][0]['o:ViewColumn'], (c) => {
+                if (c['a:DataType'] === undefined) {
+                    console.log(`视图:${v['a:Name']} 中的 ${c['a:Code']} 无数据类型，数据校验失败`);
+                    throw new Error(`视图:${v['a:Name']} 中的 ${c['a:Code']} 无数据类型，数据校验失败`);
+                }
+                Columns[c['a:Code']] = {
+                    Name: c['a:Name'][0],
+                    Code: c['a:Code'][0],
+                    DataType: c['a:DataType'] ? c['a:DataType'][0] : '',
+                    Comment: c['a:Name'][0]
+                };
+            });
+            let Tables = {};
+            _.forOwn(v['c:View.Tables'][0]['o:Table'], (t) => {
+                Tables[this._ref[t['$']['Ref']]['Code']] = this._tables[this._ref[t['$']['Ref']]['Code']];
+            });
+            let view = {
+                Code: v['a:Code'][0],
+                Name: v['a:Name'][0],
+                Columns,
+                Tables,
+            };
+            this._views[v['a:Code'][0]] = view;
         });
     }
     parse_table() {
@@ -117,7 +196,7 @@ class PDM {
     }
     gen_db() {
         console.log('Write Db JS Start');
-        var dbDir = 'src/db';
+        var dbDir = path.join(this._dir, 'db');
         if (!fs.existsSync(dbDir)) {
             fs.mkdirSync(dbDir);
         }
@@ -144,6 +223,25 @@ export default {
             fs.writeFileSync(dbPath, js);
             console.log(`Write src/db/${name}.ts`);
         });
+        _.forOwn(this._views, (table, name) => {
+            var columns = [];
+            _.forOwn(table.Columns, (column) => {
+                columns.push(`//${column.Name} 
+/**
+${column.Comment.replace("\r\n", "//").replace("\r", "//").replace("\n", "//")}
+*/
+    ${column.Code}:{
+        type:DbDataType.${this.get_type(column.DataType)},
+    }`);
+            });
+            var js = `import { DbDataType } from "castle-koa/dist/utils/iface";
+export default {
+    ${columns.join(',\r\n   ')}
+}`;
+            let dbPath = `${dbDir}/${name}.ts`;
+            fs.writeFileSync(dbPath, js);
+            console.log(`Write ${dbPath}.ts`);
+        });
         console.log(`Write Db Success`);
         return this;
     }
@@ -162,7 +260,7 @@ export default {
     }
     gen_relation() {
         console.log(`Write Relation Start`);
-        var dir = 'src/relation';
+        var dir = path.join(this._dir, 'relation');
         if (!fs.existsSync(dir)) {
             fs.mkdirSync(dir);
         }
@@ -188,7 +286,7 @@ export default class ${name} extends Relation{
     }
     gen_controller() {
         console.log(`Write Controller Start`);
-        var dir = 'src/controller';
+        var dir = path.join(this._dir, 'controller');
         if (!fs.existsSync(dir)) {
             fs.mkdirSync(dir);
         }
@@ -218,7 +316,7 @@ export default class ${name} extends Controller{
             _.forOwn(this._tables, (table, name) => {
                 let __MODULE_NAME__ = name;
                 let __MODULE_PK__ = '';
-                _.forOwn(table.columns, (column) => {
+                _.forOwn(table.Columns, (column) => {
                     if (column.PrimaryKey) {
                         __MODULE_PK__ = column.Code;
                     }
