@@ -1,6 +1,6 @@
 {
   "name": "castle_koa_cli",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "castle_koa framework gengrate",
   "main": "dist/index.js",
   "files": [
