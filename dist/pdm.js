@@ -56,41 +56,46 @@ class PDM {
     }
     parse_ref() {
         let Ref = {};
-        _.forOwn(this._json['c:Tables'][0]['o:Table'], (d) => {
-            Ref[d['$']['Id']] = {
-                Type: RefType.Table,
-                Code: d['a:Code'][0],
-                Name: d['a:Name'][0],
-            };
-        });
-        _.forOwn(this._json['c:References'][0]['o:Reference'], (d) => {
-            Ref[d['$']['Id']] = {
-                Type: RefType.Reference,
-                Code: d['a:Code'][0],
-                Name: d['a:Name'][0],
-            };
-        });
-        _.forOwn(this._json['c:Procedures'][0]['o:Procedure'], (d) => {
-            Ref[d['$']['Id']] = {
-                Type: RefType.Procedures,
-                Code: d['a:Code'][0],
-                Name: d['a:Name'][0],
-            };
-        });
-        _.forOwn(this._json['c:Domains'][0]['o:Domain'], (d) => {
-            Ref[d['$']['Id']] = {
-                Type: RefType.Domain,
-                Code: d['a:Code'][0],
-                Name: d['a:Name'][0],
-            };
-        });
-        _.forOwn(this._json['c:Views'][0]['o:View'], (d) => {
-            Ref[d['$']['Id']] = {
-                Type: RefType.View,
-                Code: d['a:Code'][0],
-                Name: d['a:Name'][0],
-            };
-        });
+        if (this._json['c:Tables'])
+            _.forOwn(this._json['c:Tables'][0]['o:Table'], (d) => {
+                Ref[d['$']['Id']] = {
+                    Type: RefType.Table,
+                    Code: d['a:Code'][0],
+                    Name: d['a:Name'][0],
+                };
+            });
+        if (this._json['c:References'])
+            _.forOwn(this._json['c:References'][0]['o:Reference'], (d) => {
+                Ref[d['$']['Id']] = {
+                    Type: RefType.Reference,
+                    Code: d['a:Code'][0],
+                    Name: d['a:Name'][0],
+                };
+            });
+        if (this._json['c:Procedures'])
+            _.forOwn(this._json['c:Procedures'][0]['o:Procedure'], (d) => {
+                Ref[d['$']['Id']] = {
+                    Type: RefType.Procedures,
+                    Code: d['a:Code'][0],
+                    Name: d['a:Name'][0],
+                };
+            });
+        if (this._json['c:Domains'])
+            _.forOwn(this._json['c:Domains'][0]['o:Domain'], (d) => {
+                Ref[d['$']['Id']] = {
+                    Type: RefType.Domain,
+                    Code: d['a:Code'][0],
+                    Name: d['a:Name'][0],
+                };
+            });
+        if (this._json['c:Views'])
+            _.forOwn(this._json['c:Views'][0]['o:View'], (d) => {
+                Ref[d['$']['Id']] = {
+                    Type: RefType.View,
+                    Code: d['a:Code'][0],
+                    Name: d['a:Name'][0],
+                };
+            });
         this._ref = Ref;
     }
     parse_domain() {
@@ -106,92 +111,94 @@ class PDM {
         });
     }
     parse_view() {
-        _.forOwn(this._json['c:Views'][0]['o:View'], (v) => {
-            let Columns = {};
-            _.forOwn(v['c:Columns'][0]['o:ViewColumn'], (c) => {
-                if (c['a:DataType'] === undefined) {
-                    console.log(`视图:${v['a:Name']} 中的 ${c['a:Code']} 无数据类型，数据校验失败`);
-                    throw new Error(`视图:${v['a:Name']} 中的 ${c['a:Code']} 无数据类型，数据校验失败`);
-                }
-                Columns[c['a:Code']] = {
-                    Name: c['a:Name'][0],
-                    Code: c['a:Code'][0],
-                    DataType: c['a:DataType'] ? c['a:DataType'][0] : '',
-                    Comment: c['a:Name'][0]
+        if (this._json['c:Views'])
+            _.forOwn(this._json['c:Views'][0]['o:View'], (v) => {
+                let Columns = {};
+                _.forOwn(v['c:Columns'][0]['o:ViewColumn'], (c) => {
+                    if (c['a:DataType'] === undefined) {
+                        console.log(`视图:${v['a:Name']} 中的 ${c['a:Code']} 无数据类型，数据校验失败`);
+                        throw new Error(`视图:${v['a:Name']} 中的 ${c['a:Code']} 无数据类型，数据校验失败`);
+                    }
+                    Columns[c['a:Code']] = {
+                        Name: c['a:Name'][0],
+                        Code: c['a:Code'][0],
+                        DataType: c['a:DataType'] ? c['a:DataType'][0] : '',
+                        Comment: c['a:Name'][0]
+                    };
+                });
+                let Tables = {};
+                _.forOwn(v['c:View.Tables'][0]['o:Table'], (t) => {
+                    Tables[this._ref[t['$']['Ref']]['Code']] = this._tables[this._ref[t['$']['Ref']]['Code']];
+                });
+                let view = {
+                    Code: v['a:Code'][0],
+                    Name: v['a:Name'][0],
+                    Columns,
+                    Tables,
                 };
+                this._views[v['a:Code'][0]] = view;
             });
-            let Tables = {};
-            _.forOwn(v['c:View.Tables'][0]['o:Table'], (t) => {
-                Tables[this._ref[t['$']['Ref']]['Code']] = this._tables[this._ref[t['$']['Ref']]['Code']];
-            });
-            let view = {
-                Code: v['a:Code'][0],
-                Name: v['a:Name'][0],
-                Columns,
-                Tables,
-            };
-            this._views[v['a:Code'][0]] = view;
-        });
     }
     parse_table() {
         var DefaultValueMap = {
             "\"\"": ''
         };
         var tables = {};
-        _.forOwn(this._json['c:Tables'][0]['o:Table'], (v, k) => {
-            var code = v['a:Code'][0].replace('prefix_', '');
-            var table = {
-                Name: v['a:Name'][0],
-                Code: code.replace(/(\w+[_\w]{0,})/g, ($0, $1, $2) => {
-                    return $1.replace(/_(\w)/g, ($a, $b) => {
-                        return $b.toUpperCase();
-                    }).replace(/(\w)/, ($c, $d) => {
-                        return $d.toUpperCase();
+        if (this._json['c:Tables'])
+            _.forOwn(this._json['c:Tables'][0]['o:Table'], (v, k) => {
+                var code = v['a:Code'][0].replace('prefix_', '');
+                var table = {
+                    Name: v['a:Name'][0],
+                    Code: code.replace(/(\w+[_\w]{0,})/g, ($0, $1, $2) => {
+                        return $1.replace(/_(\w)/g, ($a, $b) => {
+                            return $b.toUpperCase();
+                        }).replace(/(\w)/, ($c, $d) => {
+                            return $d.toUpperCase();
+                        });
+                    }),
+                    Columns: [],
+                    FKs: [],
+                };
+                var pkid = false;
+                var tpkid = false;
+                if (v["c:PrimaryKey"]
+                    && v["c:PrimaryKey"]["0"]
+                    && v["c:PrimaryKey"]["0"]["o:Key"]
+                    && v["c:PrimaryKey"]["0"]["o:Key"]["0"]) {
+                    pkid = v["c:PrimaryKey"]["0"]["o:Key"]["0"].$.Ref;
+                    _.forOwn(v["c:Keys"]["0"]["o:Key"], (key) => {
+                        if (key.$.Id == pkid) {
+                            tpkid = key["c:Key.Columns"]["0"]["o:Column"]["0"].$.Ref;
+                        }
                     });
-                }),
-                Columns: [],
-                FKs: [],
-            };
-            var pkid = false;
-            var tpkid = false;
-            if (v["c:PrimaryKey"]
-                && v["c:PrimaryKey"]["0"]
-                && v["c:PrimaryKey"]["0"]["o:Key"]
-                && v["c:PrimaryKey"]["0"]["o:Key"]["0"]) {
-                pkid = v["c:PrimaryKey"]["0"]["o:Key"]["0"].$.Ref;
-                _.forOwn(v["c:Keys"]["0"]["o:Key"], (key) => {
-                    if (key.$.Id == pkid) {
-                        tpkid = key["c:Key.Columns"]["0"]["o:Column"]["0"].$.Ref;
-                    }
-                });
-            }
-            else {
-                console.error(`表 ${v['a:Name'][0]} 的 主键 未设定`);
-            }
-            pkid = tpkid;
-            if (v['c:Columns']
-                && v['c:Columns'][0]
-                && v['c:Columns'][0]['o:Column']) {
-                _.forOwn(v['c:Columns'][0]['o:Column'], (c, i) => {
-                    table.Columns.push({
-                        Name: c['a:Name'][0],
-                        Comment: c["a:Comment"] ? c["a:Comment"]["0"] : '',
-                        Code: c['a:Code'][0],
-                        Domain: c["c:Domain"] ? this._domain[c["c:Domain"]["0"]["o:PhysicalDomain"]["0"].$.Ref] : {},
-                        DataType: c['a:DataType'][0],
-                        Identity: c['a:Identity'] == 1,
-                        PrimaryKey: pkid == c.$.Id,
-                        Unsigned: c["a:ExtendedAttributesText"] && c["a:ExtendedAttributesText"]["0"] ? c["a:ExtendedAttributesText"]["0"].indexOf('Unsigned') > -1 : false,
-                        Must: c["a:Column.Mandatory"] ? c["a:Column.Mandatory"]["0"] == 1 : false,
-                        Default: c["a:DefaultValue"] ? (DefaultValueMap[c["a:DefaultValue"]["0"]] === undefined ? c["a:DefaultValue"]["0"] : DefaultValueMap[c["a:DefaultValue"]["0"]]) : ''
+                }
+                else {
+                    console.error(`表 ${v['a:Name'][0]} 的 主键 未设定`);
+                }
+                pkid = tpkid;
+                if (v['c:Columns']
+                    && v['c:Columns'][0]
+                    && v['c:Columns'][0]['o:Column']) {
+                    _.forOwn(v['c:Columns'][0]['o:Column'], (c, i) => {
+                        table.Columns.push({
+                            Name: c['a:Name'][0],
+                            Comment: c["a:Comment"] ? c["a:Comment"]["0"] : '',
+                            Code: c['a:Code'][0],
+                            Domain: c["c:Domain"] ? this._domain[c["c:Domain"]["0"]["o:PhysicalDomain"]["0"].$.Ref] : {},
+                            DataType: c['a:DataType'][0],
+                            Identity: c['a:Identity'] == 1,
+                            PrimaryKey: pkid == c.$.Id,
+                            Unsigned: c["a:ExtendedAttributesText"] && c["a:ExtendedAttributesText"]["0"] ? c["a:ExtendedAttributesText"]["0"].indexOf('Unsigned') > -1 : false,
+                            Must: c["a:Column.Mandatory"] ? c["a:Column.Mandatory"]["0"] == 1 : false,
+                            Default: c["a:DefaultValue"] ? (DefaultValueMap[c["a:DefaultValue"]["0"]] === undefined ? c["a:DefaultValue"]["0"] : DefaultValueMap[c["a:DefaultValue"]["0"]]) : ''
+                        });
                     });
-                });
-            }
-            else {
-                console.error(`表 ${v['a:Name'][0]} 的 字段 未设定`);
-            }
-            tables[table.Code] = table;
-        });
+                }
+                else {
+                    console.error(`表 ${v['a:Name'][0]} 的 字段 未设定`);
+                }
+                tables[table.Code] = table;
+            });
         this._tables = tables;
     }
     gen_db() {
