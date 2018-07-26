@@ -340,12 +340,15 @@ export default class ${name} extends Controller{
     async gen_vuex() {
         //load template from url https://raw.githubusercontent.com/YanCastle/castle_cli/master/template/vuex/modules.ts
         let modules: string = await axios.get('https://raw.githubusercontent.com/YanCastle/castle_cli/master/template/vuex/modules.ts').then((response) => { return response.data })
-        let __MODULE_STATE__ = [], __IMPORT__ = [], __MODULES__ = [];
+        let __MODULE_STATE__ = [], __IMPORT__ = [], __MODULES__ = [], __MODULE_PK__ = '';
         _.forOwn(this._tables, (table: any, name: string) => {
             let __FIELDS__ = [], __EMPTY__ = []
             _.forOwn(table.Columns, (column) => {
                 __FIELDS__.push(`${column.Code}:${this.getTypeSymbol(column)},//${column.Name}`)
                 __EMPTY__.push(`${column.Code}:${this.getDefaultValue(column)},//${column.Name}`)
+                if (column.PrimaryKey) {
+                    __MODULE_PK__ = column.Code
+                }
                 // columns.push(`//${column.Name} ${column.Code} ${column.DataType.toUpperCase()} ${column.Comment.replace("\r\n", "//").replace("\r", "//").replace("\n", "//")}`)
             })
             let filePath = path.join(this._dir, 'store', 'modules', `${name}.ts`)
@@ -354,6 +357,7 @@ export default class ${name} extends Controller{
                 .replace(/\{__MODULE_NAME__\}/g, name)
                 .replace(/\{__UPPER_MODULE_NAME__\}/g, name.toUpperCase())
                 .replace(/\{__FIELDS__\}/g, __FIELDS__.join("\r\n    "))
+                .replace(/\{__MODULE_PK__\}/g, __MODULE_PK__)
                 .replace(/\{__EMPTY__\}/g, __EMPTY__.join("\r\n    ")))
             __MODULE_STATE__.push(`${name}State:${name}State`);
             __IMPORT__.push(`import ${name},{State as ${name}State} from './modules/${name}'`);
