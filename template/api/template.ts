@@ -1,4 +1,4 @@
-import Request from 'caslte-request'
+import Request from 'castle-request'
 class __MODULE_NAME__ extends Request {
     Controller = "__MODULE_NAME__"
     _pk = "__MODULE_PK__"
