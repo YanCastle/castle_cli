@@ -83,14 +83,14 @@ const actions = {
         context.dispatch(A_{__UPPER_MODULE_NAME__}_ALL)
     },
     async [A_{__UPPER_MODULE_NAME__}_SAVE](context: ActionContextBasic, { Data, s, e }: { Data: {__MODULE_NAME__}Object, s?: Function, e?: Function }) {
-        let d = await {__MODULE_NAME__}.save(Data.{__MODULE_PK__}, Data)
+        let d = await {__MODULE_NAME__}.save(Data.__MODULE_PK__, Data)
         if (d) { if (isFunction(s)) s() } else if (isFunction(e)) { e() }
         //更新列表
         context.dispatch(A_{__UPPER_MODULE_NAME__}_SEARCH)
         context.dispatch(A_{__UPPER_MODULE_NAME__}_ALL)
     },
-    async [A_{__UPPER_MODULE_NAME__}_DEL](context: ActionContextBasic, { {__MODULE_NAME__}ID, s, e }: { {__MODULE_NAME__}ID: number, s?: Function, e?: Function }) {
-        let d = await {__MODULE_NAME__}.del({__MODULE_PK__})
+    async [A_{__UPPER_MODULE_NAME__}_DEL](context: ActionContextBasic, { __MODULE_PK__, s, e }: { __MODULE_PK__: number, s?: Function, e?: Function }) {
+        let d = await {__MODULE_NAME__}.del(__MODULE_PK__)
         if (d) { if (isFunction(s)) s() } else if (isFunction(e)) { e() }
         //更新列表
         context.dispatch(A_{__UPPER_MODULE_NAME__}_SEARCH)
