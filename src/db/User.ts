@@ -1,0 +1,124 @@
+import { DbDataType } from "castle-koa/dist/utils/iface";
+export default {
+    //用户编号 
+/**
+
+*/
+    UID:{
+        type:DbDataType.bigint,
+        primaryKey:true,
+        autoIncrement:true,
+        defaultValue:'',
+        allowNull:false
+    },
+   //姓名 
+/**
+
+*/
+    Name:{
+        type:DbDataType.char(50),
+        primaryKey:false,
+        autoIncrement:false,
+        defaultValue:'',
+        allowNull:false
+    },
+   //性别 
+/**
+0:男,1:女
+*/
+    Sex:{
+        type:DbDataType.int(5),
+        primaryKey:false,
+        autoIncrement:false,
+        defaultValue:0,
+        allowNull:false
+    },
+   //联系电话 
+/**
+
+*/
+    Phone:{
+        type:DbDataType.char(50),
+        primaryKey:false,
+        autoIncrement:false,
+        defaultValue:'',
+        allowNull:false
+    },
+   //联系QQ 
+/**
+
+*/
+    QQ:{
+        type:DbDataType.char(50),
+        primaryKey:false,
+        autoIncrement:false,
+        defaultValue:'',
+        allowNull:false
+    },
+   //联系微信 
+/**
+
+*/
+    Wechat:{
+        type:DbDataType.char(50),
+        primaryKey:false,
+        autoIncrement:false,
+        defaultValue:'',
+        allowNull:false
+    },
+   //邮箱 
+/**
+
+*/
+    Email:{
+        type:DbDataType.char(50),
+        primaryKey:false,
+        autoIncrement:false,
+        defaultValue:'',
+        allowNull:false
+    },
+   //身份证 
+/**
+
+*/
+    IDCard:{
+        type:DbDataType.char(18),
+        primaryKey:false,
+        autoIncrement:false,
+        defaultValue:'',
+        allowNull:false
+    },
+   //入职时间 
+/**
+
+*/
+    JTime:{
+        type:DbDataType.timestamp,
+        primaryKey:false,
+        autoIncrement:false,
+        defaultValue:'',
+        allowNull:true
+    },
+   //离职时间 
+/**
+
+*/
+    OTime:{
+        type:DbDataType.timestamp,
+        primaryKey:false,
+        autoIncrement:false,
+        defaultValue:'',
+        allowNull:true
+    },
+   //状态 
+/**
+0:在职,1:离职,2:兼职
+*/
+    Status:{
+        type:DbDataType.int(5),
+        primaryKey:false,
+        autoIncrement:false,
+        defaultValue:0,
+        allowNull:false
+    }
+}

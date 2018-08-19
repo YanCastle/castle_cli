@@ -1,0 +1,124 @@
+import { DbDataType } from "castle-koa/dist/utils/iface";
+export default {
+    //项目编号 
+/**
+
+*/
+    ProjectID:{
+        type:DbDataType.bigint,
+        primaryKey:true,
+        autoIncrement:true,
+        defaultValue:'',
+        allowNull:false
+    },
+   //单位编号 
+/**
+
+*/
+    UnitID:{
+        type:DbDataType.bigint,
+        primaryKey:false,
+        autoIncrement:false,
+        defaultValue:'',
+        allowNull:false
+    },
+   //创建时间 
+/**
+
+*/
+    CTime:{
+        type:DbDataType.timestamp,
+        primaryKey:false,
+        autoIncrement:false,
+        defaultValue:'',
+        allowNull:true
+    },
+   //项目名称 
+/**
+
+*/
+    Title:{
+        type:DbDataType.char(50),
+        primaryKey:false,
+        autoIncrement:false,
+        defaultValue:'',
+        allowNull:false
+    },
+   //对方立项时间 
+/**
+
+*/
+    OCTime:{
+        type:DbDataType.timestamp,
+        primaryKey:false,
+        autoIncrement:false,
+        defaultValue:'',
+        allowNull:true
+    },
+   //我方立项时间 
+/**
+
+*/
+    MCTime:{
+        type:DbDataType.timestamp,
+        primaryKey:false,
+        autoIncrement:false,
+        defaultValue:'',
+        allowNull:true
+    },
+   //项目简介 
+/**
+
+*/
+    Memo:{
+        type:DbDataType.varchar(1000),
+        primaryKey:false,
+        autoIncrement:false,
+        defaultValue:'',
+        allowNull:false
+    },
+   //项目状态 
+/**
+0:前期沟通,1:需求审定,2:设计,3;开发,4:测试,5:验收,6:发布,7:完结,8:维护
+*/
+    Status:{
+        type:DbDataType.int(5),
+        primaryKey:false,
+        autoIncrement:false,
+        defaultValue:0,
+        allowNull:false
+    },
+   //项目负责人 
+/**
+
+*/
+    MUID:{
+        type:DbDataType.bigint,
+        primaryKey:false,
+        autoIncrement:false,
+        defaultValue:'',
+        allowNull:false
+    },
+   //项目创建人 
+/**
+
+*/
+    CUID:{
+        type:DbDataType.bigint,
+        primaryKey:false,
+        autoIncrement:false,
+        defaultValue:'',
+        allowNull:false
+    },
+   //项目是否可行 
+/**
+0:可行,1:不可行
+*/
+    Feasibility:{
+        type:DbDataType.int(5),
+        primaryKey:false,
+        autoIncrement:false,
+        defaultValue:0,
+        allowNull:false
+    }
+}
