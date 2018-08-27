@@ -20,22 +20,22 @@ exports.default = {
         type: iface_1.DbDataType.char(50),
         primaryKey: false,
         autoIncrement: false,
-        defaultValue: "",
+        defaultValue: '',
         allowNull: false
     },
     STime: {
-        type: iface_1.DbDataType.datetime,
+        type: iface_1.DbDataType.timestamp,
         primaryKey: false,
         autoIncrement: false,
-        defaultValue: iface_1.DbDataType.NOW,
-        allowNull: false
+        defaultValue: '',
+        allowNull: true
     },
     ETime: {
-        type: iface_1.DbDataType.datetime,
+        type: iface_1.DbDataType.timestamp,
         primaryKey: false,
         autoIncrement: false,
-        defaultValue: iface_1.DbDataType.NOW,
-        allowNull: false
+        defaultValue: '',
+        allowNull: true
     },
     Status: {
         type: iface_1.DbDataType.int(5),
@@ -48,14 +48,7 @@ exports.default = {
         type: iface_1.DbDataType.double(12, 2),
         primaryKey: false,
         autoIncrement: false,
-        defaultValue: 0,
-        allowNull: true
-    },
-    OBudget: {
-        type: iface_1.DbDataType.double(12, 2),
-        primaryKey: false,
-        autoIncrement: false,
-        defaultValue: 0,
+        defaultValue: 0.00,
         allowNull: true
     }
 };

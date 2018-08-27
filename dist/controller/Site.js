@@ -8,21 +8,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const controller_1 = require("castle-koa/dist/lib/controller");
-class Project extends controller_1.default {
-    adds() {
-        return __awaiter(this, void 0, void 0, function* () { return false; });
-    }
-    save() {
-        return __awaiter(this, void 0, void 0, function* () { return false; });
-    }
-    saveW() {
-        return __awaiter(this, void 0, void 0, function* () { return false; });
-    }
-    githook(post) {
+const index_1 = require("castle-koa/dist/index");
+class Site extends index_1.BaseController {
+    githook() {
         return __awaiter(this, void 0, void 0, function* () {
         });
     }
 }
-exports.default = Project;
-//# sourceMappingURL=Project.js.map
+exports.default = Site;
+//# sourceMappingURL=Site.js.map

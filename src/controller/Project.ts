@@ -13,6 +13,13 @@ import Controller from 'castle-koa/dist/lib/controller'
    //项目创建人 CUID BIGINT ,
    //项目是否可行 Feasibility INT(5) 0:可行,1:不可行,
    */
-export default class Project extends Controller{
+export default class Project extends Controller {
+    async adds(): Promise<any> { return false }
+    async save(): Promise<any> { return false }
+    async saveW(): Promise<any> { return false }
+    // async adds(): Promise<any> { return false }
+    async githook(post) {
+        //推送更新库，触发代码检查
+    }
 
 }

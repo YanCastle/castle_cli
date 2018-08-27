@@ -10,39 +10,39 @@ exports.default = {
         allowNull: false
     },
     Type: {
-        type: iface_1.DbDataType.char(50),
+        type: iface_1.DbDataType.int(5),
         primaryKey: false,
         autoIncrement: false,
-        defaultValue: "",
+        defaultValue: 0,
         allowNull: false
     },
     Storage: {
         type: iface_1.DbDataType.char(50),
         primaryKey: false,
         autoIncrement: false,
-        defaultValue: "",
+        defaultValue: '',
         allowNull: false
     },
     Path: {
         type: iface_1.DbDataType.char(250),
         primaryKey: false,
         autoIncrement: false,
-        defaultValue: "",
+        defaultValue: '',
         allowNull: false
     },
     Name: {
         type: iface_1.DbDataType.char(50),
         primaryKey: false,
         autoIncrement: false,
-        defaultValue: "",
+        defaultValue: '',
         allowNull: false
     },
     CTime: {
-        type: iface_1.DbDataType.datetime,
+        type: iface_1.DbDataType.timestamp,
         primaryKey: false,
         autoIncrement: false,
-        defaultValue: iface_1.DbDataType.NOW,
-        allowNull: false
+        defaultValue: '',
+        allowNull: true
     },
     CUID: {
         type: iface_1.DbDataType.bigint,

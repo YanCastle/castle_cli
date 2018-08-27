@@ -5,7 +5,7 @@ exports.default = {
     UID: {
         type: iface_1.DbDataType.bigint,
         primaryKey: true,
-        autoIncrement: false,
+        autoIncrement: true,
         defaultValue: '',
         allowNull: false
     },
@@ -13,7 +13,7 @@ exports.default = {
         type: iface_1.DbDataType.char(50),
         primaryKey: false,
         autoIncrement: false,
-        defaultValue: "",
+        defaultValue: '',
         allowNull: false
     },
     Sex: {
@@ -27,50 +27,50 @@ exports.default = {
         type: iface_1.DbDataType.char(50),
         primaryKey: false,
         autoIncrement: false,
-        defaultValue: "",
+        defaultValue: '',
         allowNull: false
     },
     QQ: {
         type: iface_1.DbDataType.char(50),
         primaryKey: false,
         autoIncrement: false,
-        defaultValue: "",
+        defaultValue: '',
         allowNull: false
     },
     Wechat: {
         type: iface_1.DbDataType.char(50),
         primaryKey: false,
         autoIncrement: false,
-        defaultValue: "",
+        defaultValue: '',
         allowNull: false
     },
     Email: {
         type: iface_1.DbDataType.char(50),
         primaryKey: false,
         autoIncrement: false,
-        defaultValue: "",
+        defaultValue: '',
         allowNull: false
     },
     IDCard: {
-        type: iface_1.DbDataType.char(50),
+        type: iface_1.DbDataType.char(18),
         primaryKey: false,
         autoIncrement: false,
-        defaultValue: "",
+        defaultValue: '',
         allowNull: false
     },
     JTime: {
-        type: iface_1.DbDataType.datetime,
+        type: iface_1.DbDataType.timestamp,
         primaryKey: false,
         autoIncrement: false,
-        defaultValue: iface_1.DbDataType.NOW,
-        allowNull: false
+        defaultValue: '',
+        allowNull: true
     },
     OTime: {
-        type: iface_1.DbDataType.datetime,
+        type: iface_1.DbDataType.timestamp,
         primaryKey: false,
         autoIncrement: false,
-        defaultValue: iface_1.DbDataType.NOW,
-        allowNull: false
+        defaultValue: '',
+        allowNull: true
     },
     Status: {
         type: iface_1.DbDataType.int(5),

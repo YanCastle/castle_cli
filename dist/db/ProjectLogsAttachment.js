@@ -13,7 +13,7 @@ exports.default = {
         type: iface_1.DbDataType.char(50),
         primaryKey: false,
         autoIncrement: false,
-        defaultValue: "",
+        defaultValue: '',
         allowNull: false
     },
     PLID: {

@@ -20,15 +20,15 @@ exports.default = {
         type: iface_1.DbDataType.char(50),
         primaryKey: false,
         autoIncrement: false,
-        defaultValue: "",
+        defaultValue: '',
         allowNull: false
     },
     CTime: {
-        type: iface_1.DbDataType.datetime,
+        type: iface_1.DbDataType.timestamp,
         primaryKey: false,
         autoIncrement: false,
-        defaultValue: iface_1.DbDataType.NOW,
-        allowNull: false
+        defaultValue: '',
+        allowNull: true
     },
     CUID: {
         type: iface_1.DbDataType.bigint,
@@ -36,6 +36,13 @@ exports.default = {
         autoIncrement: false,
         defaultValue: '',
         allowNull: false
+    },
+    OBudget: {
+        type: iface_1.DbDataType.double(12, 2),
+        primaryKey: false,
+        autoIncrement: false,
+        defaultValue: '',
+        allowNull: true
     }
 };
 //# sourceMappingURL=ProjectProgramme.js.map

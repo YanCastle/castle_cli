@@ -16,7 +16,7 @@ exports.default = {
         defaultValue: '',
         allowNull: true
     },
-    PassWord: {
+    PWD: {
         type: iface_1.DbDataType.char(50),
         primaryKey: false,
         autoIncrement: false,

@@ -13,7 +13,7 @@ exports.default = {
         type: iface_1.DbDataType.char(50),
         primaryKey: false,
         autoIncrement: false,
-        defaultValue: "",
+        defaultValue: '',
         allowNull: false
     },
     Type: {
@@ -27,21 +27,21 @@ exports.default = {
         type: iface_1.DbDataType.char(50),
         primaryKey: false,
         autoIncrement: false,
-        defaultValue: "",
+        defaultValue: '',
         allowNull: false
     },
     Address: {
         type: iface_1.DbDataType.char(50),
         primaryKey: false,
         autoIncrement: false,
-        defaultValue: "",
+        defaultValue: '',
         allowNull: false
     },
     CTime: {
-        type: iface_1.DbDataType.datetime,
+        type: iface_1.DbDataType.timestamp,
         primaryKey: false,
         autoIncrement: false,
-        defaultValue: iface_1.DbDataType.NOW,
+        defaultValue: '',
         allowNull: false
     },
     CUID: {
@@ -49,7 +49,7 @@ exports.default = {
         primaryKey: false,
         autoIncrement: false,
         defaultValue: '',
-        allowNull: false
+        allowNull: true
     }
 };
 //# sourceMappingURL=Units.js.map

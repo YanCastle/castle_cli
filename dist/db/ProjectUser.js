@@ -31,17 +31,17 @@ exports.default = {
         allowNull: false
     },
     CTime: {
-        type: iface_1.DbDataType.datetime,
+        type: iface_1.DbDataType.timestamp,
         primaryKey: false,
         autoIncrement: false,
-        defaultValue: "",
-        allowNull: false
+        defaultValue: '',
+        allowNull: true
     },
     Status: {
         type: iface_1.DbDataType.int(5),
         primaryKey: false,
         autoIncrement: false,
-        defaultValue: '',
+        defaultValue: 0,
         allowNull: true
     }
 };

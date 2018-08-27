@@ -20,42 +20,42 @@ exports.default = {
         type: iface_1.DbDataType.char(50),
         primaryKey: false,
         autoIncrement: false,
-        defaultValue: "",
+        defaultValue: '',
         allowNull: false
     },
     JTime: {
-        type: iface_1.DbDataType.char(50),
+        type: iface_1.DbDataType.timestamp,
         primaryKey: false,
         autoIncrement: false,
-        defaultValue: "",
-        allowNull: false
+        defaultValue: '',
+        allowNull: true
     },
     Address: {
         type: iface_1.DbDataType.char(50),
         primaryKey: false,
         autoIncrement: false,
-        defaultValue: "",
+        defaultValue: '',
         allowNull: false
     },
     CUID: {
-        type: iface_1.DbDataType.char(50),
+        type: iface_1.DbDataType.bigint,
         primaryKey: false,
         autoIncrement: false,
-        defaultValue: "",
+        defaultValue: '',
         allowNull: false
     },
     CTime: {
-        type: iface_1.DbDataType.datetime,
+        type: iface_1.DbDataType.timestamp,
         primaryKey: false,
         autoIncrement: false,
-        defaultValue: iface_1.DbDataType.NOW,
-        allowNull: false
+        defaultValue: '',
+        allowNull: true
     },
     User: {
-        type: iface_1.DbDataType.char(250),
+        type: iface_1.DbDataType.char(50),
         primaryKey: false,
         autoIncrement: false,
-        defaultValue: "",
+        defaultValue: '',
         allowNull: false
     },
     Importance: {
@@ -66,45 +66,45 @@ exports.default = {
         allowNull: false
     },
     ETime: {
-        type: iface_1.DbDataType.datetime,
+        type: iface_1.DbDataType.timestamp,
         primaryKey: false,
         autoIncrement: false,
-        defaultValue: iface_1.DbDataType.NOW,
-        allowNull: false
+        defaultValue: '',
+        allowNull: true
     },
     MUID: {
         type: iface_1.DbDataType.bigint,
         primaryKey: false,
         autoIncrement: false,
-        defaultValue: 1,
+        defaultValue: '',
         allowNull: false
     },
-    PDemandID: {
+    ProjectDemandID: {
         type: iface_1.DbDataType.bigint,
         primaryKey: false,
         autoIncrement: false,
-        defaultValue: 1,
+        defaultValue: '',
         allowNull: false
     },
     Memo: {
         type: iface_1.DbDataType.varchar(1000),
         primaryKey: false,
         autoIncrement: false,
-        defaultValue: "",
+        defaultValue: '',
         allowNull: false
     },
     ProcessMemo: {
         type: iface_1.DbDataType.varchar(1000),
         primaryKey: false,
         autoIncrement: false,
-        defaultValue: "",
+        defaultValue: '',
         allowNull: false
     },
     PassMemo: {
         type: iface_1.DbDataType.varchar(1000),
         primaryKey: false,
         autoIncrement: false,
-        defaultValue: "",
+        defaultValue: '',
         allowNull: false
     },
     Status: {
@@ -118,17 +118,17 @@ exports.default = {
         type: iface_1.DbDataType.bigint,
         primaryKey: false,
         autoIncrement: false,
-        defaultValue: 1,
+        defaultValue: '',
         allowNull: false
     },
     Programme: {
         type: iface_1.DbDataType.varchar(1000),
         primaryKey: false,
         autoIncrement: false,
-        defaultValue: "",
+        defaultValue: '',
         allowNull: false
     },
-    DFeasibility: {
+    Feasibility: {
         type: iface_1.DbDataType.int(5),
         primaryKey: false,
         autoIncrement: false,
